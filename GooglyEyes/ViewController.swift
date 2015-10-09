@@ -8,6 +8,7 @@
 
 import UIKit
 import AVFoundation
+import CoreImage
 
 class ViewController: UIViewController {
     
@@ -69,6 +70,12 @@ class ViewController: UIViewController {
     }
     
     @IBAction func didPressGoogleEyes(sender: UIButton) {
+        
+        let options: [String: AnyObject] = [CIDetectorAccuracy: CIDetectorAccuracyHigh, CIDetectorSmile: true]
+        let detector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: options)
+        var features = detector.featuresInImage(CIImage(image: self.capturedImage.image!)!)
+        
+
         
     }
     
