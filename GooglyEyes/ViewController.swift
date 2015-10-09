@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     var captureSession: AVCaptureSession?
     var stillImageOutput: AVCaptureStillImageOutput?
     var previewLayer: AVCaptureVideoPreviewLayer?
+    let detector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: [CIDetectorAccuracy: CIDetectorAccuracyHigh, CIDetectorSmile: true])
     
     @IBOutlet weak var capturedImage: UIImageView!
     @IBOutlet weak var previewVideo: UIImageView!
@@ -22,15 +23,26 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
     }
     
     override func viewDidAppear(animated: Bool) {
         captureSession = AVCaptureSession()
         captureSession?.sessionPreset = AVCaptureSessionPresetPhoto
         
-        let backCamera = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
+        var frontCamera: AVCaptureDevice! = nil
         
-        let input = try! AVCaptureDeviceInput(device: backCamera)
+        let videoDevices = AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo)
+        
+        for device in videoDevices{
+            let device = device as! AVCaptureDevice
+            if device.position == AVCaptureDevicePosition.Front {
+                frontCamera = device
+                break
+            }
+        }
+        
+        let input = try! AVCaptureDeviceInput(device: frontCamera)
         
         if (captureSession?.canAddInput(input) != nil) {
             captureSession?.addInput(input)
@@ -71,11 +83,11 @@ class ViewController: UIViewController {
     
     @IBAction func didPressGoogleEyes(sender: UIButton) {
         
-        let options: [String: AnyObject] = [CIDetectorAccuracy: CIDetectorAccuracyHigh, CIDetectorSmile: true]
-        let detector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: options)
-        var features = detector.featuresInImage(CIImage(image: self.capturedImage.image!)!)
-        
-
+        let features = detector.featuresInImage(CIImage(image: self.capturedImage.image!)!)
+        print(features)
+        for feature in features {
+            print(feature)
+        }
         
     }
     
