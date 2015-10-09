@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6211" systemVersion="14A298i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6204"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="GooglyEyes" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -15,11 +17,59 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QWz-Hf-W9h">
+                                <rect key="frame" x="235" y="550" width="130" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Add Googly Eyes!!!"/>
+                                <connections>
+                                    <action selector="didPressGoogleEyes:" destination="BYZ-38-t0r" eventType="touchUpInside" id="eD8-s6-Qez"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nru-3N-jTL">
+                                <rect key="frame" x="255" y="512" width="90" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Take Photo!!!"/>
+                                <connections>
+                                    <action selector="didPressTakePhoto:" destination="BYZ-38-t0r" eventType="touchUpInside" id="LCV-8P-ILk"/>
+                                </connections>
+                            </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="d0s-rV-G78">
+                                <rect key="frame" x="20" y="28" width="560" height="234"/>
+                                <animations/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1YO-jC-tVf">
+                                <rect key="frame" x="20" y="270" width="560" height="234"/>
+                                <animations/>
+                            </imageView>
+                        </subviews>
+                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="1YO-jC-tVf" firstAttribute="height" secondItem="d0s-rV-G78" secondAttribute="height" id="4vv-oq-d5m"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="QWz-Hf-W9h" secondAttribute="bottom" constant="20" id="BZ3-yB-vCg"/>
+                            <constraint firstItem="nru-3N-jTL" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="235" id="DBG-lf-d1h"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="QWz-Hf-W9h" secondAttribute="trailing" constant="215" id="GAY-8b-bUy"/>
+                            <constraint firstItem="1YO-jC-tVf" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="H2Z-ji-5K2"/>
+                            <constraint firstItem="QWz-Hf-W9h" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="215" id="LLf-Lz-tGa"/>
+                            <constraint firstItem="d0s-rV-G78" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="OJp-9L-buj"/>
+                            <constraint firstItem="d0s-rV-G78" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="OZS-ja-wMb"/>
+                            <constraint firstItem="1YO-jC-tVf" firstAttribute="top" secondItem="d0s-rV-G78" secondAttribute="bottom" constant="8" id="VhN-UY-vKB"/>
+                            <constraint firstItem="1YO-jC-tVf" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="byc-Tf-LqH"/>
+                            <constraint firstItem="d0s-rV-G78" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="eaq-UA-uDP"/>
+                            <constraint firstItem="QWz-Hf-W9h" firstAttribute="top" secondItem="nru-3N-jTL" secondAttribute="bottom" constant="8" id="p08-Kp-vV0"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="nru-3N-jTL" secondAttribute="trailing" constant="235" id="rK4-tR-zDf"/>
+                            <constraint firstItem="nru-3N-jTL" firstAttribute="top" secondItem="1YO-jC-tVf" secondAttribute="bottom" constant="8" id="zEk-yj-vrJ"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="capturedImage" destination="1YO-jC-tVf" id="zBG-jd-UFw"/>
+                        <outlet property="previewVideo" destination="d0s-rV-G78" id="ZTr-eb-wu4"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="382" y="189"/>
         </scene>
     </scenes>
 </document>
