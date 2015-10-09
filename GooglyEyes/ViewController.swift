@@ -15,14 +15,14 @@ class ViewController: UIViewController {
     var captureSession: AVCaptureSession?
     var stillImageOutput: AVCaptureStillImageOutput?
     var previewLayer: AVCaptureVideoPreviewLayer?
-    let detector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: [CIDetectorAccuracy: CIDetectorAccuracyHigh, CIDetectorSmile: true])
+    var detector: CIDetector?
     
     @IBOutlet weak var capturedImage: UIImageView!
     @IBOutlet weak var previewVideo: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        detector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: [CIDetectorAccuracy: CIDetectorAccuracyHigh, CIDetectorSmile: true])
         
     }
     
@@ -83,9 +83,10 @@ class ViewController: UIViewController {
     
     @IBAction func didPressGoogleEyes(sender: UIButton) {
         
-        let features = detector.featuresInImage(CIImage(image: self.capturedImage.image!)!)
-        print(features)
-        for feature in features {
+        let image = CIImage(image: self.capturedImage.image!)
+        let features = detector?.featuresInImage(image!, options: [CIDetectorSmile : true, CIDetectorEyeBlink : true])
+
+        for feature in features as! [CIFaceFeature] {
             print(feature)
         }
         
