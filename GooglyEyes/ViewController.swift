@@ -17,9 +17,9 @@ class ViewController: UIViewController {
     var stillImageOutput: AVCaptureStillImageOutput?
     var previewLayer: AVCaptureVideoPreviewLayer?
     var detector: CIDetector?
-    var image: UIImage?
     
-    @IBOutlet weak var capturedImage: UIImageView!
+    @IBOutlet weak var previewView: UIImageView!
+    @IBOutlet weak var imageView: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,8 +56,8 @@ class ViewController: UIViewController {
         captureSession?.addOutput(stillImageOutput)
         
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        capturedImage.layer.addSublayer(previewLayer!)
-        previewLayer?.frame = capturedImage.bounds
+        previewView.layer.addSublayer(previewLayer!)
+        previewLayer?.frame = previewView.bounds
         
         captureSessionIsRunning = true
         captureSession?.startRunning()
@@ -70,46 +70,60 @@ class ViewController: UIViewController {
     }
     
     @IBAction func didPressTakePhoto(sender: UIButton) {
-        
+        var image: UIImage?
         if captureSessionIsRunning == true {
             if let videoConnection = stillImageOutput?.connectionWithMediaType(AVMediaTypeVideo) {
                 stillImageOutput?.captureStillImageAsynchronouslyFromConnection(videoConnection, completionHandler: {(sampleBuffer, error) in
                     let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(sampleBuffer)
                     let dataProvider = CGDataProviderCreateWithCFData(imageData)
                     let cgImageRef = CGImageCreateWithJPEGDataProvider(dataProvider, nil, true, CGColorRenderingIntent.RenderingIntentDefault)
-                    self.image = UIImage(CGImage: cgImageRef!, scale: 1.0, orientation: UIImageOrientation.Right)
-                    self.capturedImage.image = self.image
+                    image = UIImage(CGImage: cgImageRef!, scale: 1.0, orientation: UIImageOrientation.Right)
                 })
             }
-            captureSessionIsRunning = false
+
             captureSession?.stopRunning()
+            captureSessionIsRunning = false
+            
+            imageView.image = image
+            imageView.hidden = false
+            
+            previewView.hidden = true
+            
         } else if captureSessionIsRunning == false {
-            captureSessionIsRunning = true
+            
             captureSession?.startRunning()
+            captureSessionIsRunning = true
+            
+            imageView.hidden = true
+            
+            previewView.hidden = false
         }
     }
     
-    @IBAction func didPressGoogleEyes(sender: UIButton) {
+    @IBAction func didPressGooglyEyes(sender: UIButton) {
         
-        let ciimage = CIImage(image: image!)
-        let features = detector?.featuresInImage(ciimage!)
-        print(features?.count)
+        let img = imageView.image
+        let ciimg = CIImage(image: img!)
+        
+        UIGraphicsBeginImageContextWithOptions(img!.size, true, 0)
+        
+        img!.drawInRect(CGRectMake(0, 0, img!.size.width, img!.size.height))
+        
+        let features = detector?.featuresInImage(ciimg!)
         for feature in features as! [CIFaceFeature] {
-            print(feature.leftEyePosition, feature.rightEyePosition)
-            GooglyEyes(leftEye: feature.leftEyePosition, rightEye: feature.rightEyePosition, image: image!)
+            
+            let eye = UIImage(named: "eye")
+            
+            eye?.drawInRect(CGRectMake(feature.leftEyePosition.x, feature.leftEyePosition.y, 50, 50))
+            eye?.drawInRect(CGRectMake(feature.rightEyePosition.x, feature.rightEyePosition.y, 50, 50))
+
         }
         
-    }
-    
-    func GooglyEyes(leftEye leftEye: CGPoint, rightEye: CGPoint, image: UIImage) {
-        let x: CGFloat = 100
-        let eye = UIImage(named: "eye")
-        UIGraphicsBeginImageContext(image.size)
-        image.drawInRect(CGRectMake(0, 0, image.size.width, image.size.height))
-        eye?.drawInRect(CGRectMake(leftEye.x - x/2, leftEye.y - x/2, x, x))
-        eye?.drawInRect(CGRectMake(rightEye.x - x/2, rightEye.y - x/2, x, x))
-        self.capturedImage.image = UIGraphicsGetImageFromCurrentImageContext()
+        let imgpro = UIGraphicsGetImageFromCurrentImageContext()
+        
         UIGraphicsEndImageContext()
+        
+        imageView.image = imgpro
+        
     }
-    
 }
