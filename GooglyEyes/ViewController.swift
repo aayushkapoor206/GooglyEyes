@@ -17,12 +17,13 @@ class ViewController: UIViewController {
     var stillImageOutput: AVCaptureStillImageOutput?
     var previewLayer: AVCaptureVideoPreviewLayer?
     var detector: CIDetector?
+    var image: UIImage?
     
     @IBOutlet weak var capturedImage: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        detector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: [CIDetectorAccuracy: CIDetectorAccuracyHigh, CIDetectorSmile: true])
+        detector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: [CIDetectorAccuracy: CIDetectorAccuracyHigh])
         
     }
     
@@ -76,8 +77,8 @@ class ViewController: UIViewController {
                     let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(sampleBuffer)
                     let dataProvider = CGDataProviderCreateWithCFData(imageData)
                     let cgImageRef = CGImageCreateWithJPEGDataProvider(dataProvider, nil, true, CGColorRenderingIntent.RenderingIntentDefault)
-                    let image = UIImage(CGImage: cgImageRef!, scale: 1.0, orientation: UIImageOrientation.Right)
-                    self.capturedImage.image = image
+                    self.image = UIImage(CGImage: cgImageRef!, scale: 1.0, orientation: UIImageOrientation.Right)
+                    self.capturedImage.image = self.image
                 })
             }
             captureSessionIsRunning = false
@@ -90,13 +91,25 @@ class ViewController: UIViewController {
     
     @IBAction func didPressGoogleEyes(sender: UIButton) {
         
-        let image = CIImage(image: self.capturedImage.image!)
-        let features = detector?.featuresInImage(image!, options: [CIDetectorSmile : true, CIDetectorEyeBlink : true])
-
+        let ciimage = CIImage(image: image!)
+        let features = detector?.featuresInImage(ciimage!)
+        print(features?.count)
         for feature in features as! [CIFaceFeature] {
-            print(feature)
+            print(feature.leftEyePosition, feature.rightEyePosition)
+            GooglyEyes(leftEye: feature.leftEyePosition, rightEye: feature.rightEyePosition, image: image!)
         }
         
+    }
+    
+    func GooglyEyes(leftEye leftEye: CGPoint, rightEye: CGPoint, image: UIImage) {
+        let x: CGFloat = 100
+        let eye = UIImage(named: "eye")
+        UIGraphicsBeginImageContext(image.size)
+        image.drawInRect(CGRectMake(0, 0, image.size.width, image.size.height))
+        eye?.drawInRect(CGRectMake(leftEye.x - x/2, leftEye.y - x/2, x, x))
+        eye?.drawInRect(CGRectMake(rightEye.x - x/2, rightEye.y - x/2, x, x))
+        self.capturedImage.image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
     }
     
 }
