@@ -12,13 +12,13 @@ import CoreImage
 
 class ViewController: UIViewController {
     
+    var captureSessionIsRunning: Bool?
     var captureSession: AVCaptureSession?
     var stillImageOutput: AVCaptureStillImageOutput?
     var previewLayer: AVCaptureVideoPreviewLayer?
     var detector: CIDetector?
     
     @IBOutlet weak var capturedImage: UIImageView!
-    @IBOutlet weak var previewVideo: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,9 +55,10 @@ class ViewController: UIViewController {
         captureSession?.addOutput(stillImageOutput)
         
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewVideo.layer.addSublayer(previewLayer!)
-        previewLayer?.frame = previewVideo.bounds
+        capturedImage.layer.addSublayer(previewLayer!)
+        previewLayer?.frame = capturedImage.bounds
         
+        captureSessionIsRunning = true
         captureSession?.startRunning()
         
     }
@@ -69,16 +70,22 @@ class ViewController: UIViewController {
     
     @IBAction func didPressTakePhoto(sender: UIButton) {
         
-        if let videoConnection = stillImageOutput?.connectionWithMediaType(AVMediaTypeVideo) {
-            stillImageOutput?.captureStillImageAsynchronouslyFromConnection(videoConnection, completionHandler: {(sampleBuffer, error) in
-                let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(sampleBuffer)
-                let dataProvider = CGDataProviderCreateWithCFData(imageData)
-                let cgImageRef = CGImageCreateWithJPEGDataProvider(dataProvider, nil, true, CGColorRenderingIntent.RenderingIntentDefault)
-                let image = UIImage(CGImage: cgImageRef!, scale: 1.0, orientation: UIImageOrientation.Right)
-                self.capturedImage.image = image
-            })
+        if captureSessionIsRunning == true {
+            if let videoConnection = stillImageOutput?.connectionWithMediaType(AVMediaTypeVideo) {
+                stillImageOutput?.captureStillImageAsynchronouslyFromConnection(videoConnection, completionHandler: {(sampleBuffer, error) in
+                    let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(sampleBuffer)
+                    let dataProvider = CGDataProviderCreateWithCFData(imageData)
+                    let cgImageRef = CGImageCreateWithJPEGDataProvider(dataProvider, nil, true, CGColorRenderingIntent.RenderingIntentDefault)
+                    let image = UIImage(CGImage: cgImageRef!, scale: 1.0, orientation: UIImageOrientation.Right)
+                    self.capturedImage.image = image
+                })
+            }
+            captureSessionIsRunning = false
+            captureSession?.stopRunning()
+        } else if captureSessionIsRunning == false {
+            captureSessionIsRunning = true
+            captureSession?.startRunning()
         }
-        
     }
     
     @IBAction func didPressGoogleEyes(sender: UIButton) {
